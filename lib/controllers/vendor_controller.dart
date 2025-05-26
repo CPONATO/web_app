@@ -30,13 +30,10 @@ class VendorController {
   }
 
   // Delete vendor function
-  Future<void> deleteVendor({
-    required String vendorId,
-    required context,
-  }) async {
+  deleteVendor({required String vendorId, required context}) async {
     try {
       http.Response response = await http.delete(
-        Uri.parse('$uri/api/user/delete-account/$vendorId'),
+        Uri.parse('$uri/api/vendors/$vendorId'),
         headers: <String, String>{
           "Content-Type": 'application/json; charset=UTF-8',
         },

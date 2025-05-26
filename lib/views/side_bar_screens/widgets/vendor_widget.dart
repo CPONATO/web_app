@@ -16,44 +16,45 @@ class _VendorWidgetState extends State<VendorWidget> {
   @override
   void initState() {
     super.initState();
-    futureVendors = _vendorController.loadVendors();
+    futureVendors = VendorController().loadVendors();
   }
 
   void _refreshVendors() {
     setState(() {
-      futureVendors = _vendorController.loadVendors();
+      futureVendors = VendorController().loadVendors();
     });
   }
 
-  Future<void> _deleteVendor(String vendorId) async {
-    // Show confirmation dialog
-    bool? confirmDelete = await showDialog<bool>(
+  void _showDeleteDialog(String vendorId, String vendorName) {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Delete'),
-          content: Text('Are you sure you want to delete this vendor?'),
+          title: Text('Delete Vendor'),
+          content: Text('Are you sure you want to delete $vendorName?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
               child: Text('Cancel'),
             ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text('Delete', style: TextStyle(color: Colors.red)),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _vendorController.deleteVendor(
+                  vendorId: vendorId,
+                  context: context,
+                );
+                _refreshVendors();
+              },
+              child: Text('Delete', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
       },
     );
-
-    if (confirmDelete == true) {
-      await _vendorController.deleteVendor(
-        vendorId: vendorId,
-        context: context,
-      );
-      _refreshVendors(); // Refresh the list after deletion
-    }
   }
 
   @override
@@ -139,7 +140,9 @@ class _VendorWidgetState extends State<VendorWidget> {
                       vendorData(
                         1,
                         IconButton(
-                          onPressed: () => _deleteVendor(vendor.id),
+                          onPressed: () {
+                            _showDeleteDialog(vendor.id, vendor.fullName);
+                          },
                           icon: Icon(Icons.delete, color: Colors.red),
                         ),
                       ),

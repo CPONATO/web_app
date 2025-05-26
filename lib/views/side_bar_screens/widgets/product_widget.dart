@@ -59,23 +59,26 @@ class _ProductWidgetState extends State<ProductWidget> {
                       productData(
                         1,
                         product.images.isNotEmpty
-                            ? Image.network(
-                              product.images[0],
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  width: 50,
-                                  height: 50,
-                                  color: Colors.grey[300],
-                                  child: Icon(Icons.image_not_supported),
-                                );
-                              },
+                            ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                product.images[0],
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: 80,
+                                    height: 80,
+                                    color: Colors.grey[300],
+                                    child: Icon(Icons.image_not_supported),
+                                  );
+                                },
+                              ),
                             )
                             : Container(
-                              width: 50,
-                              height: 50,
+                              width: 80,
+                              height: 80,
                               color: Colors.grey[300],
                               child: Icon(Icons.image),
                             ),
@@ -88,14 +91,12 @@ class _ProductWidgetState extends State<ProductWidget> {
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       productData(
                         1,
                         Text(
-                          "\$${product.productPrice}",
+                          "${product.productPrice.toStringAsFixed(0)} VND",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -114,74 +115,58 @@ class _ProductWidgetState extends State<ProductWidget> {
                         ),
                       ),
                       productData(
-                        2,
+                        1,
                         Text(
                           product.category,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(fontSize: 14, color: Colors.blue),
                         ),
                       ),
                       productData(
                         2,
                         Text(
-                          product.description,
-                          style: TextStyle(fontSize: 14),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      productData(
-                        1,
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color:
-                                product.popular
-                                    ? Colors.orange
-                                    : Colors.grey[300],
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            product.popular ? 'Popular' : 'Normal',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color:
-                                  product.popular ? Colors.white : Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          product.description.length > 50
+                              ? '${product.description.substring(0, 50)}...'
+                              : product.description,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
                           ),
                         ),
                       ),
                       productData(
                         1,
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color:
-                                product.recommend
-                                    ? Colors.blue
-                                    : Colors.grey[300],
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            product.recommend ? 'Recommend' : 'Normal',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color:
-                                  product.recommend
-                                      ? Colors.white
-                                      : Colors.black,
-                              fontWeight: FontWeight.bold,
+                        Row(
+                          children: [
+                            Icon(
+                              product.popular ? Icons.star : Icons.star_border,
+                              color: Colors.orange,
+                              size: 16,
                             ),
-                          ),
+                            SizedBox(width: 4),
+                            Text(
+                              product.popular ? 'Popular' : '',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                      productData(
+                        1,
+                        Row(
+                          children: [
+                            Icon(
+                              product.recommend
+                                  ? Icons.thumb_up
+                                  : Icons.thumb_up_outlined,
+                              color: Colors.green,
+                              size: 16,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              product.recommend ? 'Recommend' : '',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
                         ),
                       ),
                     ],

@@ -56,7 +56,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 rowHeader(2, 'Product Name'),
                 rowHeader(1, 'Price'),
                 rowHeader(1, 'Quantity'),
-                rowHeader(2, 'Category'),
+                rowHeader(1, 'Category'),
                 rowHeader(2, 'Description'),
                 rowHeader(1, 'Popular'),
                 rowHeader(1, 'Recommend'),

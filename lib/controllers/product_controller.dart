@@ -24,7 +24,7 @@ class ProductController {
         throw Exception('Failed to load products');
       }
     } catch (e) {
-      throw Exception('Error loading products $e');
+      throw Exception('Error loading products: $e');
     }
   }
 }

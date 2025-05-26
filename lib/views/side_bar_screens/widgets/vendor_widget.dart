@@ -11,11 +11,49 @@ class VendorWidget extends StatefulWidget {
 
 class _VendorWidgetState extends State<VendorWidget> {
   late Future<List<Vendor>> futureVendors;
+  final VendorController _vendorController = VendorController();
 
   @override
   void initState() {
     super.initState();
-    futureVendors = VendorController().loadVendors();
+    futureVendors = _vendorController.loadVendors();
+  }
+
+  void _refreshVendors() {
+    setState(() {
+      futureVendors = _vendorController.loadVendors();
+    });
+  }
+
+  Future<void> _deleteVendor(String vendorId) async {
+    // Show confirmation dialog
+    bool? confirmDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Delete'),
+          content: Text('Are you sure you want to delete this vendor?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmDelete == true) {
+      await _vendorController.deleteVendor(
+        vendorId: vendorId,
+        context: context,
+      );
+      _refreshVendors(); // Refresh the list after deletion
+    }
   }
 
   @override
@@ -44,7 +82,6 @@ class _VendorWidgetState extends State<VendorWidget> {
           return ListView.builder(
             shrinkWrap: true,
             itemCount: vendors.length,
-
             itemBuilder: (context, index) {
               final vendor = vendors[index];
               return Container(
@@ -101,7 +138,10 @@ class _VendorWidgetState extends State<VendorWidget> {
                       ),
                       vendorData(
                         1,
-                        IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+                        IconButton(
+                          onPressed: () => _deleteVendor(vendor.id),
+                          icon: Icon(Icons.delete, color: Colors.red),
+                        ),
                       ),
                     ],
                   ),

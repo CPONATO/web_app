@@ -84,7 +84,7 @@ class _OrderWidgetState extends State<OrderWidget> {
                       orderData(
                         1,
                         Text(
-                          "\$${order.productPrice.toStringAsFixed(2)}",
+                          "${order.productPrice.toStringAsFixed(0)} VND",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

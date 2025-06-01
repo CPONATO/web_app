@@ -11,11 +11,45 @@ class ProductWidget extends StatefulWidget {
 
 class _ProductWidgetState extends State<ProductWidget> {
   late Future<List<Product>> futureProducts;
+  final ProductController _productController = ProductController();
 
   @override
   void initState() {
     super.initState();
-    futureProducts = ProductController().loadProducts();
+    futureProducts = _productController.loadProducts();
+  }
+
+  void _refreshProducts() {
+    setState(() {
+      futureProducts = _productController.loadProducts();
+    });
+  }
+
+  void _updateProductStatus(
+    String productId,
+    bool currentPopular,
+    bool currentRecommend,
+    String field,
+  ) {
+    bool newPopular = currentPopular;
+    bool newRecommend = currentRecommend;
+
+    if (field == 'popular') {
+      newPopular = !currentPopular;
+    } else {
+      newRecommend = !currentRecommend;
+    }
+
+    _productController
+        .updateProductStatus(
+          productId: productId,
+          popular: newPopular,
+          recommend: newRecommend,
+          context: context,
+        )
+        .then((_) {
+          _refreshProducts();
+        });
   }
 
   @override
@@ -135,38 +169,106 @@ class _ProductWidgetState extends State<ProductWidget> {
                       ),
                       productData(
                         1,
-                        Row(
-                          children: [
-                            Icon(
-                              product.popular ? Icons.star : Icons.star_border,
-                              color: Colors.orange,
-                              size: 16,
+                        GestureDetector(
+                          onTap:
+                              () => _updateProductStatus(
+                                product.id,
+                                product.popular,
+                                product.recommend,
+                                'popular',
+                              ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
                             ),
-                            SizedBox(width: 4),
-                            Text(
-                              product.popular ? 'Popular' : '',
-                              style: TextStyle(fontSize: 12),
+                            decoration: BoxDecoration(
+                              color:
+                                  product.popular
+                                      ? Colors.orange
+                                      : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          ],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  product.popular
+                                      ? Icons.star
+                                      : Icons.star_border,
+                                  color:
+                                      product.popular
+                                          ? Colors.white
+                                          : Colors.grey[600],
+                                  size: 16,
+                                ),
+                                SizedBox(width: 2),
+                                Text(
+                                  product.popular ? 'Popular' : 'Not Popular',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color:
+                                        product.popular
+                                            ? Colors.white
+                                            : Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                       productData(
                         1,
-                        Row(
-                          children: [
-                            Icon(
-                              product.recommend
-                                  ? Icons.thumb_up
-                                  : Icons.thumb_up_outlined,
-                              color: Colors.green,
-                              size: 16,
+                        GestureDetector(
+                          onTap:
+                              () => _updateProductStatus(
+                                product.id,
+                                product.popular,
+                                product.recommend,
+                                'recommend',
+                              ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
                             ),
-                            SizedBox(width: 4),
-                            Text(
-                              product.recommend ? 'Recommend' : '',
-                              style: TextStyle(fontSize: 12),
+                            decoration: BoxDecoration(
+                              color:
+                                  product.recommend
+                                      ? Colors.green
+                                      : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          ],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  product.recommend
+                                      ? Icons.thumb_up
+                                      : Icons.thumb_up_outlined,
+                                  color:
+                                      product.recommend
+                                          ? Colors.white
+                                          : Colors.grey[600],
+                                  size: 16,
+                                ),
+                                SizedBox(width: 2),
+                                Text(
+                                  product.recommend
+                                      ? 'Recommend'
+                                      : 'Not Recommend',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color:
+                                        product.recommend
+                                            ? Colors.white
+                                            : Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ],

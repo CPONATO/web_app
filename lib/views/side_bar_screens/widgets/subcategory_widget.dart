@@ -13,7 +13,6 @@ class _SubcategoryWidgetState extends State<SubcategoryWidget> {
   late Future<List<Subcategory>> futureCategories;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     futureCategories = SubcategoryController().loadSubcategories();
   }
